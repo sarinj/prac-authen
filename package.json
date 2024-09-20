@@ -1,0 +1,12 @@
+{
+  "name": "solidithai-test",
+  "version": "1.0.0",
+  "scripts": {
+    "install:all": "npm install && npm run postinstall",
+    "postinstall": "cd frontend && npm install && cd ../backend && npm install",
+    "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run start:dev\""
+  },
+  "dependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
