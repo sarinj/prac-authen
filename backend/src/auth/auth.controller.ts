@@ -11,7 +11,6 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from 'src/user/dtos/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
-import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -22,8 +21,36 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req: any) {
-    return await this.authService.login(req.user);
+  async login(@Request() req, @Res({ passthrough: true }) response) {
+    const { refresh_token, access_token, ...user } =
+      await this.authService.login(req.user);
+
+    response.cookie('act', access_token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 60 * 15),
+    });
+
+    response.cookie('rft', refresh_token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+    });
+
+    return user;
+  }
+
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) response) {
+    response.cookie('act', '', {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
+
+    response.cookie('rft', '', {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
+
+    return;
   }
 
   @Post('register')
@@ -33,7 +60,14 @@ export class AuthController {
 
   @UseGuards(RefreshJwtAuthGuard)
   @Post('refresh')
-  async refresh(@Request() req: any) {
-    return await this.authService.refreshToken(req.user);
+  async refresh(@Request() req, @Res({ passthrough: true }) response) {
+    const { access_token } = await this.authService.refreshToken(req.user);
+
+    response.cookie('act', access_token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 60 * 15),
+    });
+
+    return;
   }
 }

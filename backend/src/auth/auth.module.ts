@@ -7,6 +7,7 @@ import { User } from 'src/entities/user.entity';
 import { LocalStrategy } from './strategies/local-strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt-strategy';
+import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
   imports: [
@@ -16,7 +17,13 @@ import { JwtStrategy } from './strategies/jwt-strategy';
       signOptions: { expiresIn: '60s' },
     }),
   ],
-  providers: [AuthService, UserService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    UserService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshJwtStrategy,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}
