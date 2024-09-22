@@ -10,7 +10,7 @@ export type CredentialType = {
 
 interface AuthContextType {
   currentUser: UserType | undefined
-  signIn: (credential: CredentialType) => void
+  signIn: (credential: CredentialType) => Promise<void>
   signOut: () => void
 }
 
@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextType>({
 })
 
 export function AuthenticationProvider({ children }: { children: ReactNode }) {
-  const { data: currentUser } = useQuery({
+  const { data: currentUser, refetch } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
       const resp = await request.get('/auth/me')
@@ -31,6 +31,9 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
 
   async function signIn(credential: CredentialType) {
     const resp = await request.post('/auth/login', credential)
+    if (resp.status === 200) {
+      await refetch()
+    }
     return resp.data
   }
 

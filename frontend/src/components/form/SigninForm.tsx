@@ -4,15 +4,24 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useAuth } from '@/hooks/useAuthentication'
+import { useNavigate } from 'react-router-dom'
 
 interface SigninFormProps {
   onRegister?: () => void
 }
 
 export default function SigninForm({ onRegister }: SigninFormProps) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { signIn } = useAuth()
+  const navigate = useNavigate()
+
+  const { mutate, isPending, isError } = useMutation({
+    mutationFn: signIn,
+    onSuccess: () => {
+      navigate('/home')
+    },
+  })
 
   const formSchema = z.object({
     username: z.string().email({ message: 'Please enter an email.' }),
@@ -35,17 +44,16 @@ export default function SigninForm({ onRegister }: SigninFormProps) {
   })
 
   async function handleLogin(data: z.infer<typeof formSchema>) {
-    setLoading(true)
-    console.log(data)
+    mutate(data)
   }
 
   return (
     <Form {...form}>
       <form className='min-w-[230px]' onSubmit={form.handleSubmit(handleLogin)}>
         <h1 className='mb-7 text-[32px] font-bold'>Sign In</h1>
-        {error && (
-          <div className='bg-orange mb-4 rounded-[4px] p-5 text-sm text-black'>
-            {error}
+        {isError && (
+          <div className='mb-4 rounded-[4px] border border-red-600 bg-red-400 p-3 text-sm'>
+            <p>Invalid email or password.</p>
           </div>
         )}
         <div className='space-y-4'>
@@ -74,7 +82,7 @@ export default function SigninForm({ onRegister }: SigninFormProps) {
             )}
           />
         </div>
-        <Button type='submit' className='mt-8 w-full' isLoading={loading}>
+        <Button type='submit' className='mt-8 w-full' isLoading={isPending}>
           Sign In
         </Button>
 

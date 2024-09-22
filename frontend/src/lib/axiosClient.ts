@@ -11,7 +11,7 @@ request.interceptors.response.use(
   response => response,
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
-      await request.get('/auth/refreshtoken').catch(error => {
+      await request.post('/auth/refresh').catch(error => {
         return Promise.reject(error)
       })
     }
