@@ -28,10 +28,10 @@ export default function SigninForm({ onRegister }: SigninFormProps) {
     password: z
       .string()
       .min(4, {
-        message: 'Your password must contain between 4 and 60 characters.',
+        message: 'Please enter a password.',
       })
       .max(60, {
-        message: 'Your password must contain between 4 and 60 characters.',
+        message: 'Please enter a password.',
       }),
   })
 

@@ -10,7 +10,11 @@ const request = axios.create({
 request.interceptors.response.use(
   response => response,
   async (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config
+    if (
+      error.response?.status === 401 &&
+      originalRequest?.url !== '/auth/refresh'
+    ) {
       await request.post('/auth/refresh').catch(error => {
         return Promise.reject(error)
       })

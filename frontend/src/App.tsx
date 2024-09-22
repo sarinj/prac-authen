@@ -1,13 +1,22 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import LoginPage from './routes/login'
-import HomePage from './routes/home'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import LoginPage from './pages/login'
+import HomePage from './pages/authenticated/home'
+import { AuthProtectedRoutes } from './lib/authProtectedRoutes'
+import AuthLayout from './pages/authenticated/authLayout'
 
 function App() {
-  const router = createBrowserRouter([
-    { path: '/', element: <LoginPage /> },
-    { path: '/home', element: <HomePage /> },
-  ])
-  return <RouterProvider router={router} />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<LoginPage />} />
+        <Route element={<AuthLayout />}>
+          <Route element={<AuthProtectedRoutes />}>
+            <Route path='/home' element={<HomePage />} />
+          </Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

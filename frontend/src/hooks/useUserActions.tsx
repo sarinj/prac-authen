@@ -13,7 +13,10 @@ export function useUserActions() {
     return resp.data
   }
 
-  async function searchUsers() {}
+  async function searchUsers(params: { search: string }) {
+    const resp = await request.get('/user', { params })
+    return resp.data
+  }
 
   return { signUp, searchUsers }
 }

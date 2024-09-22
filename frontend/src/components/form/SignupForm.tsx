@@ -46,7 +46,7 @@ export default function SignupForm({ onSignIn }: SignupFormProps) {
 
   const { signUp } = useUserActions()
 
-  const { mutate, isPending, isSuccess, isError, data } = useMutation({
+  const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: signUp,
     onSuccess: () => {
       setTimeout(() => {
@@ -78,7 +78,6 @@ export default function SignupForm({ onSignIn }: SignupFormProps) {
             })}
           >
             {isSuccess ? 'Registered successfully.' : 'Email in use.'}
-            {data}
           </div>
         )}
         <div className='space-y-4'>

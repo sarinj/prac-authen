@@ -37,6 +37,8 @@ export class AuthController {
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     });
 
+    response.status(200);
+
     return user;
   }
 
@@ -52,7 +54,9 @@ export class AuthController {
       expires: new Date(Date.now()),
     });
 
-    return;
+    response.status(200);
+
+    return { message: 'Logged out' };
   }
 
   @Post('register')
@@ -69,6 +73,8 @@ export class AuthController {
       httpOnly: true,
       expires: new Date(Date.now() + 1000 * 60 * 15),
     });
+
+    response.status(200);
 
     return;
   }
