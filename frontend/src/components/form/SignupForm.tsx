@@ -4,21 +4,19 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useUserActions } from '@/hooks/useUserActions'
+import { cn } from '@/lib/utils'
 
 interface SignupFormProps {
   onSignIn: () => void
 }
 
 export default function SignupForm({ onSignIn }: SignupFormProps) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-
   const formSchema = z
     .object({
       name: z.string().min(1, { message: 'Name is required.' }),
-      username: z.string().email({ message: 'Please enter an valid email.' }),
+      email: z.string().email({ message: 'Please enter an valid email.' }),
       password: z
         .string()
         .min(4, {
@@ -40,14 +38,29 @@ export default function SignupForm({ onSignIn }: SignupFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      username: '',
+      email: '',
       password: '',
       confirmPassword: '',
     },
   })
 
+  const { signUp } = useUserActions()
+
+  const { mutate, isPending, isSuccess, isError } = useMutation({
+    mutationFn: signUp,
+    onSuccess: () => {
+      setTimeout(() => {
+        onSignIn()
+      }, 500)
+    },
+  })
+
   async function handleRegister(data: z.infer<typeof formSchema>) {
-    console.log(data)
+    mutate({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    })
   }
 
   return (
@@ -57,14 +70,14 @@ export default function SignupForm({ onSignIn }: SignupFormProps) {
         onSubmit={form.handleSubmit(handleRegister)}
       >
         <h1 className='mb-7 text-[32px] font-bold'>Sign Up</h1>
-        {error && (
-          <div className='bg-orange mb-4 rounded-[4px] p-5 text-sm text-black'>
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className='mb-4 rounded-[4px] bg-green-600 p-5 text-sm text-white'>
-            {success}
+        {(isSuccess || isError) && (
+          <div
+            className={cn('mb-4 rounded-[4px] p-3 text-sm', {
+              'border border-red-600 bg-red-400': isError,
+              'border border-green-600 bg-green-400': isSuccess,
+            })}
+          >
+            {isSuccess ? 'Registered successfully.' : 'Email in use.'}
           </div>
         )}
         <div className='space-y-4'>
@@ -82,7 +95,7 @@ export default function SignupForm({ onSignIn }: SignupFormProps) {
           />
           <FormField
             control={form.control}
-            name='username'
+            name='email'
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -121,7 +134,7 @@ export default function SignupForm({ onSignIn }: SignupFormProps) {
             )}
           />
         </div>
-        <Button type='submit' className='mt-8 w-full' isLoading={loading}>
+        <Button type='submit' className='mt-8 w-full' isLoading={isPending}>
           Sign Up
         </Button>
         <p className='text-gray mt-2 text-[12px]'>

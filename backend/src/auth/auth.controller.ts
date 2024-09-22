@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Request,
   Res,
@@ -11,6 +12,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from 'src/user/dtos/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -35,6 +37,8 @@ export class AuthController {
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     });
 
+    response.status(200);
+
     return user;
   }
 
@@ -50,7 +54,9 @@ export class AuthController {
       expires: new Date(Date.now()),
     });
 
-    return;
+    response.status(200);
+
+    return { message: 'Logged out' };
   }
 
   @Post('register')
@@ -68,6 +74,17 @@ export class AuthController {
       expires: new Date(Date.now() + 1000 * 60 * 15),
     });
 
+    response.status(200);
+
     return;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async me(@Request() req) {
+    const { password, ...user } = await this.userService.findOneWithUserName(
+      req.user.username,
+    );
+    return user;
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -9,6 +9,14 @@ export class UserService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   async create(createUserDto: CreateUserDto) {
+    const userExists = await this.repo.find({
+      where: { email: createUserDto.email },
+    });
+
+    if (userExists.length > 0) {
+      throw new BadRequestException('Email in use.');
+    }
+
     const user = this.repo.create(createUserDto);
     await this.repo.save(user);
     const { password, ...result } = user;
