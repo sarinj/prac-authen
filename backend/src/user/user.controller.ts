@@ -24,7 +24,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findUsers(
-    @Query('search') search?: string,
+    @Query('search') search: string,
     @Query('page') page: string = '1',
     @Query('pageSize') pageSize: string = '10',
   ) {
