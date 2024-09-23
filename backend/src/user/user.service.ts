@@ -1,7 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dtos/create-user.dto';
 
 @Injectable()
@@ -38,7 +42,14 @@ export class UserService {
     return await this.repo.findOne({ where: { email: username } });
   }
 
-  async find(email: string, name: string) {
-    return await this.repo.find({ where: { email, name } });
+  async find(search: string, offset: number, limit: number) {
+    const [users, total] = await this.repo.findAndCount({
+      where: search
+        ? [{ email: Like(`%${search}%`) }, { name: Like(`%${search}%`) }]
+        : {},
+      skip: offset,
+      take: limit,
+    });
+    return { users, total };
   }
 }

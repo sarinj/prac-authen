@@ -13,7 +13,11 @@ export function useUserActions() {
     return resp.data
   }
 
-  async function searchUsers(params: { search: string }) {
+  async function searchUsers(params: {
+    search?: string
+    page: number
+    pageSize: number
+  }) {
     const resp = await request.get('/user', { params })
     return resp.data
   }
