@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuthentication'
+import UserTable from './components/userTable'
 
 export default function HomePage() {
   const { currentUser } = useAuth()
@@ -7,6 +8,9 @@ export default function HomePage() {
       <h1 className='text-lg'>
         Welcome <span className='font-semibold'>{currentUser?.name}</span>
       </h1>
+      <div className='mt-4'>
+        <UserTable />
+      </div>
     </div>
   )
 }

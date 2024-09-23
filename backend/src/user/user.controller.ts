@@ -23,9 +23,27 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findUsers(@Query('email') email?: string, @Query('name') name?: string) {
-    const users = this.userService.find(email, name);
-    return users;
+  async findUsers(
+    @Query('search') search?: string,
+    @Query('page') page: string = '1',
+    @Query('pageSize') pageSize: string = '10',
+  ) {
+    const pageNumber = parseInt(page, 10);
+    const pageSizeNumber = parseInt(pageSize, 10);
+    const offset = (pageNumber - 1) * pageSizeNumber;
+
+    const { users, total } = await this.userService.find(
+      search,
+      offset,
+      pageSizeNumber,
+    );
+    return {
+      users,
+      page: pageNumber,
+      pageSize: pageSizeNumber,
+      totalPages: Math.ceil(total / pageSizeNumber),
+      total: total,
+    };
   }
 
   @Post()

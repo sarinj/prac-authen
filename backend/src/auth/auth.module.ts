@@ -8,12 +8,13 @@ import { LocalStrategy } from './strategies/local-strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt-strategy';
 import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
+import { JWT_SECRET } from 'src/constant';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
-      secret: `${process.env.JWT_SECRET}`,
+      secret: JWT_SECRET,
       signOptions: { expiresIn: '60s' },
     }),
   ],
