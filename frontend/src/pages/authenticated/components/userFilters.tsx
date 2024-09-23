@@ -8,23 +8,21 @@ export default function UserFilters({
 }: UserFiltersProps) {
   const { debounce } = useDebounce()
   return (
-    <div className='flex flex-wrap gap-x-4 gap-y-4'>
-      <div className='flex flex-col'>
-        <Input
-          onChange={e =>
-            debounce(
-              () =>
-                onSearchParamsChange({
-                  ...searchParams,
-                  search: e.target.value,
-                }),
-              500
-            )
-          }
-          className='w-[250px] md:w-[480px]'
-          placeholder='Search for Name, Email'
-        />
-      </div>
+    <div>
+      <Input
+        onChange={e =>
+          debounce(
+            () =>
+              onSearchParamsChange({
+                ...searchParams,
+                search: e.target.value,
+              }),
+            500
+          )
+        }
+        className='md:w-[630px]'
+        placeholder='Search for Name, Email'
+      />
     </div>
   )
 }

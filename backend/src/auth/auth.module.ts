@@ -15,7 +15,7 @@ import { JWT_SECRET } from 'src/constant';
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
       secret: JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '15m' },
     }),
   ],
   providers: [

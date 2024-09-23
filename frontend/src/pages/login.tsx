@@ -9,7 +9,7 @@ export default function LoginPage() {
   const { isAuthenticated } = useAuth()
 
   if (isAuthenticated) {
-    return <Navigate to='/home' />
+    return <Navigate to='/' />
   }
 
   return (
