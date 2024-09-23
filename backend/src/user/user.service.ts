@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Like, Repository } from 'typeorm';
@@ -49,6 +45,7 @@ export class UserService {
         : {},
       skip: offset,
       take: limit,
+      select: ['id', 'email', 'name'],
     });
     return { users, total };
   }
