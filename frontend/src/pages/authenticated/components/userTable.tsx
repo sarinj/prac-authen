@@ -64,8 +64,8 @@ export default function UserTable() {
         columns={columns}
         data={users}
         isLoading={isLoading}
-        currentPage={filters.currentPage as number}
-        pageSize={filters.pageSize as number}
+        currentPage={filters.currentPage}
+        pageSize={filters.pageSize}
         totalPages={totalPage}
         onPaginationChange={(page, pageSize) =>
           handleParamsChange({ ...filters, currentPage: page, pageSize })
