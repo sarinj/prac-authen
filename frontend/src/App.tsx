@@ -3,6 +3,7 @@ import LoginPage from './pages/login'
 import HomePage from './pages/authenticated/home'
 import { AuthProtectedRoutes } from './lib/authProtectedRoutes'
 import AuthLayout from './pages/authenticated/authLayout'
+import NotFoundPage from './pages/notFoundPage'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path='/home' element={<HomePage />} />
           </Route>
         </Route>
+        <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   )

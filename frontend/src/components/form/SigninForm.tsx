@@ -86,7 +86,7 @@ export default function SigninForm({ onRegister }: SigninFormProps) {
           Sign In
         </Button>
 
-        <p className='mt-5 text-[12px]'>
+        <p className='mt-5 text-[14px]'>
           Don't have an account ?{' '}
           <span
             className='cursor-pointer font-semibold hover:underline'
