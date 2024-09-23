@@ -11,6 +11,7 @@ export type CredentialType = {
 interface AuthContextType {
   currentUser: UserType | undefined
   isAuthenticated: boolean
+  isLoadingUser: boolean
   signIn: (credential: CredentialType) => Promise<void>
   signOut: () => Promise<void>
 }
@@ -18,6 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   currentUser: undefined,
   isAuthenticated: false,
+  isLoadingUser: true,
   signIn: async () => {},
   signOut: async () => {},
 })
@@ -25,7 +27,11 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthenticationProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
 
-  const { data: currentUser, refetch } = useQuery({
+  const {
+    data: currentUser,
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
       const resp = await request.get('/auth/me')
@@ -63,6 +69,7 @@ export function AuthenticationProvider({ children }: { children: ReactNode }) {
 
   const value = {
     currentUser,
+    isLoadingUser: isLoading,
     isAuthenticated: !!currentUser,
     signIn,
     signOut,

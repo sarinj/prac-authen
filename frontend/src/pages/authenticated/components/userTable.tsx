@@ -55,7 +55,7 @@ export default function UserTable() {
   ]
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-6 px-2'>
       <UserFilters
         searchParams={filters}
         onSearchParamsChange={handleParamsChange}

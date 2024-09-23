@@ -19,7 +19,7 @@ export default function SigninForm({ onRegister }: SigninFormProps) {
   const { mutate, isPending, isError } = useMutation({
     mutationFn: signIn,
     onSuccess: () => {
-      navigate('/home')
+      navigate('/')
     },
   })
 
